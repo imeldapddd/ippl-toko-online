@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+Use Modules\Shop\Database\Seeders\ShopDatabaseSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,9 +15,21 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        //User::factory()->create([
+        //    'name' => 'Test User',
+        //    'email' => 'test@example.com',
+        // ]);
+
+        if ($this->command->confirm('Do you want to refresh migration befire sending, it will clear all old data ?')){
+            $this->command->call('migrate:refresh');
+            $this->command->info('Data cleared, starting from blank database');
+        }
+
+        User::factory()->create();
+        $this->command->info('sample user seeded.');
+
+        if ($this->command->confirm('Do you want to seed sample product ?')){
+            $this->call(ShopDatabaseSeeder::class);
+        }   
     }
 }
